@@ -3,12 +3,15 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Sci-Fi Cube with Laser (JS)</title>
+<title>Rotating Cube with Laser</title>
 <style>
   body {
-    margin: 0; height: 100vh;
+    margin: 0;
+    height: 100vh;
     background: black;
-    display: flex; justify-content: center; align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     overflow: hidden;
     font-family: 'Orbitron', sans-serif;
     color: #00ffea;
@@ -16,149 +19,176 @@
   }
   #scene {
     position: relative;
-    width: 200px; height: 200px;
+    width: 200px;
+    height: 200px;
   }
   #cube {
-    width: 150px; height: 150px;
+    width: 150px;
+    height: 150px;
     position: relative;
     transform-style: preserve-3d;
-    margin: auto;
   }
-  #cube div {
+  .face {
     position: absolute;
-    width: 150px; height: 150px;
+    width: 150px;
+    height: 150px;
     border: 2px solid #00ffea;
-    background: rgba(0, 255, 234, 0.1);
+    background: rgba(0,255,234,0.1);
     box-shadow: 0 0 20px #00ffea;
-    display: flex; justify-content: center; align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-  #cube .front::before {
+  .front::before {
     content: "";
-    width: 70px; height: 70px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     background: #00ffea;
     box-shadow: 0 0 30px cyan;
     position: relative;
     z-index: 1;
   }
-  #cube .front  { transform: translateZ(75px); }
-  #cube .back   { transform: rotateY(180deg) translateZ(75px); }
-  #cube .right  { transform: rotateY(90deg) translateZ(75px); }
-  #cube .left   { transform: rotateY(-90deg) translateZ(75px); }
-  #cube .top    { transform: rotateX(90deg) translateZ(75px); }
-  #cube .bottom { transform: rotateX(-90deg) translateZ(75px); }
+  .front { transform: translateZ(75px); }
+  .back { transform: rotateY(180deg) translateZ(75px); }
+  .right { transform: rotateY(90deg) translateZ(75px); }
+  .left { transform: rotateY(-90deg) translateZ(75px); }
+  .top { transform: rotateX(90deg) translateZ(75px); }
+  .bottom { transform: rotateX(-90deg) translateZ(75px); }
 
   #laser {
     position: fixed;
-    width: 6px;
-    height: 20px;
+    width: 8px;
+    height: 30px;
     background: #00fff0;
-    box-shadow: 0 0 10px #00fff0, 0 0 20px #00fff0;
+    box-shadow: 0 0 15px #00fff0, 0 0 25px #00fff0;
     border-radius: 2px;
     transform-origin: top center;
     pointer-events: none;
+    opacity: 0;
   }
 </style>
 </head>
 <body>
-<div id="scene">
-  <div id="cube">
-    <div class="front"></div>
-    <div class="back"></div>
-    <div class="right"></div>
-    <div class="left"></div>
-    <div class="top"></div>
-    <div class="bottom"></div>
+  <div id="scene">
+    <div id="cube">
+      <div class="face front"></div>
+      <div class="face back"></div>
+      <div class="face right"></div>
+      <div class="face left"></div>
+      <div class="face top"></div>
+      <div class="face bottom"></div>
+    </div>
   </div>
-</div>
-<div id="laser"></div>
+  <div id="laser"></div>
 
 <script>
-  // Constants
   const cube = document.getElementById('cube');
   const laser = document.getElementById('laser');
   const scene = document.getElementById('scene');
 
-  // Cube rotation state
-  let rotX = 0;
-  let rotY = 0;
+  let angleX = 0;
+  let angleY = 0;
+  const speedX = 0.5;
+  const speedY = 1;
 
-  // Animation parameters
-  const rotationSpeedX = 0.5; // degrees per frame approx
-  const rotationSpeedY = 1;
+  const cubeSize = 150;
+  const cameraDistance = 800;
 
   // Convert degrees to radians
-  function degToRad(deg) {
-    return deg * Math.PI / 180;
+  function degToRad(deg) { return deg * Math.PI / 180; }
+
+  // Project 3D point to 2D screen coordinates
+  function project(x, y, z) {
+    const scale = cameraDistance / (cameraDistance + z);
+    return {
+      x: window.innerWidth / 2 + x * scale,
+      y: window.innerHeight / 2 - y * scale,
+      scale: scale,
+    };
   }
 
-  // Calculate front face position and direction in screen coords
-  function getFrontFaceVector() {
-    // Cube center on screen
-    const rect = scene.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+  // Calculate front face position and direction vector
+  function getFrontFaceDirection() {
+    const rx = degToRad(angleX);
+    const ry = degToRad(angleY);
 
-    // Calculate rotation matrices for current angles
-    const rx = degToRad(rotX);
-    const ry = degToRad(rotY);
+    // Front face normal (0,0,1) rotated by X and Y
+    let x = Math.sin(ry);
+    let y = -Math.sin(rx);
+    let z = Math.cos(rx)*Math.cos(ry);
 
-    // Front face normal vector in cube local space is (0,0,1)
-    // Apply rotations around X and Y axes
-    const cosX = Math.cos(rx), sinX = Math.sin(rx);
-    const cosY = Math.cos(ry), sinY = Math.sin(ry);
+    // Position of front face center in cube space (0,0, cubeSize/2 = 75)
+    let cx = 0;
+    let cy = 0;
+    let cz = cubeSize / 2;
 
-    // Rotate (0,0,1) by rotX around X-axis
-    let x1 = 0;
-    let y1 = -sinX;
-    let z1 = cosX;
+    // Rotate position as well
+    // Rotate around X
+    let cy1 = cy * Math.cos(rx) - cz * Math.sin(rx);
+    let cz1 = cy * Math.sin(rx) + cz * Math.cos(rx);
+    let cx1 = cx;
 
-    // Rotate result by rotY around Y-axis
-    let x2 = cosY * x1 + sinY * z1;
-    let y2 = y1;
-    let z2 = -sinY * x1 + cosY * z1;
+    // Rotate around Y
+    let cx2 = cx1 * Math.cos(ry) + cz1 * Math.sin(ry);
+    let cz2 = -cx1 * Math.sin(ry) + cz1 * Math.cos(ry);
+    let cy2 = cy1;
 
-    return {centerX, centerY, dirX: x2, dirY: y2, dirZ: z2};
+    return {
+      pos: {x: cx2, y: cy2, z: cz2},
+      dir: {x, y, z}
+    };
   }
 
-  // Animate cube rotation and laser beam
+  // Animate laser flying from front face outward
+  let laserProgress = 0;
+  const laserDuration = 100; // frames (approx 2s)
+
   function animate() {
-    rotX = (rotX + rotationSpeedX) % 360;
-    rotY = (rotY + rotationSpeedY) % 360;
+    angleX = (angleX + speedX) % 360;
+    angleY = (angleY + speedY) % 360;
 
-    cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    cube.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
 
-    const {centerX, centerY, dirX, dirY, dirZ} = getFrontFaceVector();
-
-    // Only shoot laser if front face roughly facing forward (dirZ > 0)
-    if (dirZ > 0) {
-      // Calculate laser position - start just in front of cube center
-      const laserStartX = centerX + dirX * 75;
-      const laserStartY = centerY - dirY * 75;
-
-      laser.style.left = laserStartX + 'px';
-      laser.style.top = laserStartY + 'px';
-
-      // Calculate laser length - to edge of screen in that direction
-      const maxDistance = Math.max(window.innerWidth, window.innerHeight) * 1.5;
-
-      // Normalize direction in 2D screen space
-      const vecLength = Math.sqrt(dirX*dirX + dirY*dirY);
-      const normX = dirX / vecLength;
-      const normY = -dirY / vecLength; // invert Y for screen coordinates
-
-      // Calculate rotation angle for laser rectangle (CSS rotates clockwise)
-      const angle = Math.atan2(normY, normX) * 180 / Math.PI;
-
-      laser.style.width = '6px';
-      laser.style.height = maxDistance + 'px';
-      laser.style.transform = `translate(-50%, 0) rotate(${angle}deg)`;
-
+    if (laserProgress === 0) {
       laser.style.opacity = '1';
-    } else {
-      // Hide laser when front face not facing viewer
-      laser.style.opacity = '0';
     }
+
+    const {pos, dir} = getFrontFaceDirection();
+
+    // Calculate 2D projection of laser start point (front face center)
+    const start2D = project(pos.x, pos.y, pos.z);
+
+    // Calculate laser travel length (off screen)
+    const maxDist = Math.sqrt(window.innerWidth**2 + window.innerHeight**2);
+
+    // Laser current distance along direction vector (linear interpolation)
+    const dist = (laserProgress / laserDuration) * maxDist;
+
+    // Current laser 3D position
+    const lx = pos.x + dir.x * dist;
+    const ly = pos.y + dir.y * dist;
+    const lz = pos.z + dir.z * dist;
+
+    // Project laser position to screen
+    const laser2D = project(lx, ly, lz);
+
+    // Compute rotation angle for the laser in 2D
+    const deltaX = laser2D.x - start2D.x;
+    const deltaY = laser2D.y - start2D.y;
+    const angle = Math.atan2(deltaY, deltaX) * 180/Math.PI;
+
+    // Position laser at interpolated position, rotated along laser direction,
+    // with the small rectangle oriented from front face outward
+    laser.style.left = start2D.x + 'px';
+    laser.style.top = start2D.y + 'px';
+    laser.style.width = '8px';
+    laser.style.height = '30px';
+    laser.style.transform = `translate(-50%, 0) rotate(${angle}deg) translateY(${dist}px)`;
+    laser.style.opacity = 1 - laserProgress / laserDuration;
+
+    laserProgress++;
+    if (laserProgress > laserDuration) laserProgress = 0;
 
     requestAnimationFrame(animate);
   }
