@@ -43,7 +43,20 @@
       border: 2px solid #00ffea;
       background: rgba(0, 255, 234, 0.1);
       box-shadow: 0 0 20px #00ffea;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+    /* Circle on front face */
+    .front::before {
+      content: "";
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: #00ffea;
+      box-shadow: 0 0 30px cyan;
+    }
+
     .front  { transform: translateZ(75px); }
     .back   { transform: rotateY(180deg) translateZ(75px); }
     .right  { transform: rotateY(90deg) translateZ(75px); }
@@ -63,7 +76,7 @@
 </head>
 <body>
   <h1>Welcome to My Sci-Fi GitHub Page!</h1>
-  <p>This is a simple website with a cool sci-fi rotating shape below.</p>
+  <p>This is a simple website with a cool sci-fi rotating cube below, featuring a glowing circle on one face.</p>
   <div class="cube">
     <div class="front"></div>
     <div class="back"></div>
