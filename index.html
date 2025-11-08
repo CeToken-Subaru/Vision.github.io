@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Rotating Cube with Timed Laser</title>
+<title>My Sci-Fi GitHub Page</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
   body, html {
@@ -20,7 +20,7 @@
     top: 10px; left: 0; right: 0;
     margin: 0;
     font-weight: 900;
-    font-size: 2.6em;
+    font-size: 2.5em;
     text-align: center;
     text-shadow: 0 0 10px #00ffea, 0 0 20px #00ffa0;
     z-index: 100;
@@ -69,15 +69,15 @@
   .left { transform: rotateY(-90deg) translateZ(80px); }
   .top { transform: rotateX(90deg) translateZ(80px); }
   .bottom { transform: rotateX(-90deg) translateZ(80px); }
-
+  /* Laser beam style. Longer horizontally, thin vertically */
   #laser {
     position: fixed;
     top: 50%;
     left: 50%;
-    width: 8px;
-    height: 30px;
+    width: 120px;  /* longer beam */
+    height: 6px;
     background: #00fff0;
-    box-shadow: 0 0 15px #00fff0, 0 0 30px #00fff0;
+    box-shadow: 0 0 20px #00fff0, 0 0 40px #00fff0;
     border-radius: 3px;
     transform-origin: left center;
     pointer-events: none;
@@ -100,53 +100,53 @@
     </div>
   </div>
 </div>
+
 <div id="laser"></div>
 
 <script>
   const cube = document.getElementById('cube');
   const laser = document.getElementById('laser');
 
-  const cubeRotationDuration = 4000; // ms for one full cube rotation
-  const laserFlightDuration = 2000; // ms laser flies out
+  const rotationDuration = 4000; // 4 seconds for one full cube rotation
+  const laserFlightDuration = 1500; // 1.5 seconds laser flight
+  const laserDelay = rotationDuration / 4; // 1 sec delay after rotation start before firing
 
   let startTime = null;
-  let firingLaser = false;
-  let laserStartTime = 0;
+  let laserStart = null;
 
   function animate(timestamp) {
     if (!startTime) startTime = timestamp;
     const elapsed = timestamp - startTime;
 
-    // Cube rotation angle based on elapsed time and rotation duration (full 360)
-    const rotationProgress = (elapsed % cubeRotationDuration) / cubeRotationDuration;
-    const angleY = rotationProgress * 360; // rotate on Y axis only (for simplicity)
+    // Calculate rotation angle around Y axis only for simplicity
+    const rotationProgress = (elapsed % rotationDuration) / rotationDuration;
+    const angleY = rotationProgress * 360;
     cube.style.transform = `rotateY(${angleY}deg)`;
 
-    // Laser firing logic: shoot laser every full cube rotation start
-    const laserCyclePosition = elapsed % cubeRotationDuration;
+    // Handle laser shooting timing
+    const modTime = elapsed % rotationDuration;
 
-    if (!firingLaser && laserCyclePosition < 50) { // start laser in first 50ms of rotation cycle
-      firingLaser = true;
-      laserStartTime = timestamp;
+    if (!laserStart && modTime >= laserDelay) {
+      laserStart = timestamp;
       laser.style.opacity = '1';
-      laser.style.left = '50%';
+      // Position laser at right side of cube center (half cube width)
+      // We place laser horizontally centered vertically at middle screen height
+      laser.style.left = `calc(50% + ${160/2}px)`; // 160px is cube width, add half cube width to center
       laser.style.top = '50%';
-      laser.style.width = '8px';
-      laser.style.height = '30px';
-      laser.style.transform = 'translate(-50%, -50%) translateX(0)'; // start center
+      laser.style.transform = 'translate(0, -50%) translateX(0) rotate(0deg)';
     }
 
-    if (firingLaser) {
-      const laserElapsed = timestamp - laserStartTime;
+    if (laserStart) {
+      const laserElapsed = timestamp - laserStart;
       if (laserElapsed <= laserFlightDuration) {
-        // Move laser rightwards from center to off right edge
-        const travelPercent = laserElapsed / laserFlightDuration;
-        const travelDistance = window.innerWidth / 2 + 50; // travel beyond right edge for disappearance
-        laser.style.transform = `translate(-50%, -50%) translateX(${travelDistance * travelPercent}px)`;
-        laser.style.opacity = 1 - travelPercent;
+        // Laser moves from cube side to right outside viewport
+        const progress = laserElapsed / laserFlightDuration;
+        const travelDistance = window.innerWidth / 2 + 200; // beyond right edge
+        laser.style.transform = `translate(0, -50%) translateX(${travelDistance * progress}px) rotate(0deg)`;
+        laser.style.opacity = 1 - progress;
       } else {
         laser.style.opacity = '0';
-        firingLaser = false;
+        laserStart = null;
       }
     }
 
