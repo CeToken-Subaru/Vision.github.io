@@ -6,42 +6,53 @@
 <title>My Sci-Fi GitHub Page</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
+  /* Body styling to fill viewport with flexbox column layout */
   body, html {
     margin: 0; padding: 0; height: 100%;
     background: black;
     color: #00ffea;
     font-family: 'Orbitron', sans-serif;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    user-select: none;
   }
+  /* Fixed top title */
   h1 {
-    margin: 20px 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    margin: 15px 0;
     font-weight: 900;
-    font-size: 2.6em;
+    font-size: 2.5em;
     text-align: center;
     text-shadow: 0 0 10px #00ffea, 0 0 20px #00ffa0;
+    z-index: 100;
+    background: black;
+  }
+  /* Container fills remaining viewport below the title and centers content */
+  #container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   #scene {
-    width: 200px;
-    height: 200px;
-    perspective: 800px;
+    width: 220px;
+    height: 220px;
+    perspective: 900px;
     position: relative;
   }
   #cube {
-    width: 150px;
-    height: 150px;
+    width: 160px;
+    height: 160px;
     position: relative;
     transform-style: preserve-3d;
     margin: auto;
   }
   .face {
     position: absolute;
-    width: 150px;
-    height: 150px;
+    width: 160px;
+    height: 160px;
     border: 2px solid #00ffea;
     background: rgba(0, 255, 234, 0.1);
     box-shadow: 0 0 20px #00ffea;
@@ -51,140 +62,139 @@
   }
   .front::before {
     content: "";
-    width: 70px;
-    height: 70px;
+    width: 75px;
+    height: 75px;
     border-radius: 50%;
     background: #00ffea;
     box-shadow: 0 0 30px cyan;
     position: relative;
     z-index: 1;
   }
-  .front { transform: translateZ(75px); }
-  .back { transform: rotateY(180deg) translateZ(75px); }
-  .right { transform: rotateY(90deg) translateZ(75px); }
-  .left { transform: rotateY(-90deg) translateZ(75px); }
-  .top { transform: rotateX(90deg) translateZ(75px); }
-  .bottom { transform: rotateX(-90deg) translateZ(75px); }
+  /* Cube faces positioned with slightly larger translateZ */
+  .front { transform: translateZ(80px); }
+  .back { transform: rotateY(180deg) translateZ(80px); }
+  .right { transform: rotateY(90deg) translateZ(80px); }
+  .left { transform: rotateY(-90deg) translateZ(80px); }
+  .top { transform: rotateX(90deg) translateZ(80px); }
+  .bottom { transform: rotateX(-90deg) translateZ(80px); }
+  /* Laser beam styling */
   #laser {
     position: fixed;
     width: 8px;
     height: 30px;
     background: #00fff0;
-    box-shadow: 0 0 15px #00fff0, 0 0 25px #00fff0;
-    border-radius: 2px;
+    box-shadow: 0 0 15px #00fff0, 0 0 30px #00fff0;
+    border-radius: 3px;
     transform-origin: top center;
     pointer-events: none;
     opacity: 0;
-    z-index: 1000;
+    z-index: 200;
   }
 </style>
 </head>
 <body>
-<h1>Welcome to My Sci-Fi GitHub Page!</h1>
-<div id="scene">
-  <div id="cube">
-    <div class="face front"></div>
-    <div class="face back"></div>
-    <div class="face right"></div>
-    <div class="face left"></div>
-    <div class="face top"></div>
-    <div class="face bottom"></div>
+  <h1>Welcome to My Sci-Fi GitHub Page!</h1>
+  <div id="container">
+    <div id="scene">
+      <div id="cube">
+        <div class="face front"></div>
+        <div class="face back"></div>
+        <div class="face right"></div>
+        <div class="face left"></div>
+        <div class="face top"></div>
+        <div class="face bottom"></div>
+      </div>
+    </div>
   </div>
-</div>
-<div id="laser"></div>
+  <div id="laser"></div>
 
-<script>
-  const cube = document.getElementById('cube');
-  const laser = document.getElementById('laser');
-  const scene = document.getElementById('scene');
+  <script>
+    const cube = document.getElementById('cube');
+    const laser = document.getElementById('laser');
+    const cubeSize = 160;
+    const cameraDistance = 900;
+    const laserDuration = 100; // frames for laser travel
+    let laserProgress = 0;
 
-  let angleX = 0;
-  let angleY = 0;
-  const speedX = 0.5;
-  const speedY = 1;
+    let angleX = 0;
+    let angleY = 0;
+    const speedX = 0.5;
+    const speedY = 1;
 
-  const cubeSize = 150;
-  const cameraDistance = 800;
-  const laserDuration = 100;
-  let laserProgress = 0;
+    function degToRad(deg) { return deg * Math.PI / 180; }
 
-  function degToRad(deg) { return deg * Math.PI / 180; }
-
-  function project(x, y, z) {
-    const scale = cameraDistance / (cameraDistance + z);
-    return {
-      x: window.innerWidth / 2 + x * scale,
-      y: window.innerHeight / 2 - y * scale,
-      scale: scale,
-    };
-  }
-
-  function rotateVector(x, y, z, angleX, angleY) {
-    const rx = degToRad(angleX);
-    const ry = degToRad(angleY);
-
-    // Rotate around X
-    let cosX = Math.cos(rx), sinX = Math.sin(rx);
-    let y1 = y * cosX - z * sinX;
-    let z1 = y * sinX + z * cosX;
-    let x1 = x;
-
-    // Rotate around Y
-    let cosY = Math.cos(ry), sinY = Math.sin(ry);
-    let x2 = x1 * cosY + z1 * sinY;
-    let z2 = -x1 * sinY + z1 * cosY;
-    let y2 = y1;
-
-    return [x2, y2, z2];
-  }
-
-  function animate() {
-    angleX = (angleX + speedX) % 360;
-    angleY = (angleY + speedY) % 360;
-
-    cube.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
-
-    // Front face normal vector rotated
-    const [nx, ny, nz] = rotateVector(0, 0, 1, angleX, angleY);
-    const [px, py, pz] = rotateVector(0, 0, cubeSize/2, angleX, angleY);
-
-    // Show laser only when circle face points approximately right
-    // The right direction is vector (1,0,0), so dot product > threshold to check facing right
-    const dotRight = nx*1 + ny*0 + nz*0;
-
-    if(dotRight > 0.95) { // facing almost exactly right
-      const start2D = project(px, py, pz);
-      const maxDist = Math.sqrt(window.innerWidth * window.innerWidth + window.innerHeight * window.innerHeight);
-      const dist = (laserProgress / laserDuration) * maxDist;
-
-      const lx = px + nx * dist;
-      const ly = py + ny * dist;
-      const lz = pz + nz * dist;
-
-      const end2D = project(lx, ly, lz);
-      const dx = end2D.x - start2D.x;
-      const dy = end2D.y - start2D.y;
-      const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-
-      laser.style.left = start2D.x + 'px';
-      laser.style.top = start2D.y + 'px';
-      laser.style.transform = `translate(-50%, 0) rotate(${angle}deg) translateY(${dist}px)`;
-      laser.style.opacity = 1 - laserProgress / laserDuration;
-      laser.style.width = '8px';
-      laser.style.height = '30px';
-
-      laserProgress++;
-      if(laserProgress > laserDuration) laserProgress = 0;
-
-    } else {
-      laser.style.opacity = 0;
-      laserProgress = 0;
+    // Simple perspective projection
+    function project(x, y, z) {
+      const scale = cameraDistance / (cameraDistance + z);
+      return {
+        x: window.innerWidth / 2 + x * scale,
+        y: window.innerHeight / 2 - y * scale,
+        scale: scale,
+      };
     }
 
-    requestAnimationFrame(animate);
-  }
+    // Rotate vector by X then Y angles
+    function rotateVector(x, y, z, angleX, angleY) {
+      const rx = degToRad(angleX);
+      const ry = degToRad(angleY);
 
-  animate();
-</script>
+      let cosX = Math.cos(rx), sinX = Math.sin(rx);
+      let y1 = y * cosX - z * sinX;
+      let z1 = y * sinX + z * cosX;
+      let x1 = x;
+
+      let cosY = Math.cos(ry), sinY = Math.sin(ry);
+      let x2 = x1 * cosY + z1 * sinY;
+      let z2 = -x1 * sinY + z1 * cosY;
+      let y2 = y1;
+
+      return [x2, y2, z2];
+    }
+
+    function animate() {
+      angleX = (angleX + speedX) % 360;
+      angleY = (angleY + speedY) % 360;
+
+      cube.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+
+      // Front face normal and position (local front face normal (0,0,1), position (0,0,cubeSize/2))
+      const [nx, ny, nz] = rotateVector(0, 0, 1, angleX, angleY);
+      const [px, py, pz] = rotateVector(0, 0, cubeSize/2, angleX, angleY);
+
+      // Shoot laser ONLY when front face points approximately right (dot with (1,0,0) > 0.96)
+      const dotRight = nx*1 + ny*0 + nz*0;
+
+      if(dotRight > 0.96) {
+        const start2D = project(px, py, pz);
+        const maxDist = Math.sqrt(window.innerWidth * window.innerWidth + window.innerHeight * window.innerHeight);
+        const dist = (laserProgress / laserDuration) * maxDist;
+        const lx = px + nx * dist;
+        const ly = py + ny * dist;
+        const lz = pz + nz * dist;
+        const end2D = project(lx, ly, lz);
+
+        const dx = end2D.x - start2D.x;
+        const dy = end2D.y - start2D.y;
+        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+        laser.style.left = start2D.x + 'px';
+        laser.style.top = start2D.y + 'px';
+        laser.style.transform = `translate(-50%, 0) rotate(${angle}deg) translateY(${dist}px)`;
+        laser.style.width = '8px';
+        laser.style.height = '30px';
+        laser.style.opacity = 1 - laserProgress / laserDuration;
+
+        laserProgress++;
+        if(laserProgress > laserDuration) laserProgress = 0;
+      } else {
+        laser.style.opacity = 0;
+        laserProgress = 0;
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
 </body>
 </html>
