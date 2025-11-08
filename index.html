@@ -1,154 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>My Sci-Fi GitHub Page</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      background-color: black;
-      color: #00ffea;
-      font-family: 'Orbitron', sans-serif;
-      margin: 40px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      overflow: hidden;
-    }
-    h1 {
-      font-weight: 900;
-      text-shadow: 0 0 10px #00ffea, 0 0 20px #00ffa0;
-      margin-bottom: 20px;
-    }
-    p {
-      font-size: 1.2em;
-      letter-spacing: 0.05em;
-      text-shadow: 0 0 5px #00ffea;
-      margin-bottom: 50px;
-    }
-    .cube {
-      width: 150px;
-      height: 150px;
-      position: relative;
-      transform-style: preserve-3d;
-      animation: rotateCube 8s linear infinite;
-    }
-    .cube div {
-      position: absolute;
-      width: 150px;
-      height: 150px;
-      border: 2px solid #00ffea;
-      background: rgba(0, 255, 234, 0.1);
-      box-shadow: 0 0 20px #00ffea;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    /* Circle on front face */
-    .front::before {
-      content: "";
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: #00ffea;
-      box-shadow: 0 0 30px cyan;
-      position: relative;
-      z-index: 1;
-    }
-    /* Laser beams container */
-    .front {
-      position: relative;
-    }
-    /* Laser beams */
-    .laser {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 2px;
-      height: 150px;
-      background: linear-gradient(0deg, cyan, transparent);
-      transform-origin: bottom center;
-      animation: laser-shoot 1.5s linear infinite;
-      box-shadow: 0 0 10px cyan;
-      opacity: 0.8;
-      border-radius: 1px;
-    }
-    /* Variation in laser rotation and delay */
-    .laser:nth-child(1) {
-      transform: translate(-50%, -100%) rotate(0deg);
-      animation-delay: 0s;
-    }
-    .laser:nth-child(2) {
-      transform: translate(-50%, -100%) rotate(20deg);
-      animation-delay: 0.2s;
-    }
-    .laser:nth-child(3) {
-      transform: translate(-50%, -100%) rotate(-20deg);
-      animation-delay: 0.4s;
-    }
-    .laser:nth-child(4) {
-      transform: translate(-50%, -100%) rotate(40deg);
-      animation-delay: 0.6s;
-    }
-    .laser:nth-child(5) {
-      transform: translate(-50%, -100%) rotate(-40deg);
-      animation-delay: 0.8s;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sci-Fi Cube With Laser</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
+<style>
+  body {
+    margin: 0; height: 100vh;
+    background: black;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
+    color: #00ffea;
+  }
+  .scene {
+    width: 200px; height: 200px;
+    perspective: 800px;
+    position: relative;
+  }
+  .cube {
+    width: 150px; height: 150px;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: rotateCube 8s linear infinite;
+    margin: auto;
+  }
+  .cube div {
+    position: absolute;
+    width: 150px; height: 150px;
+    border: 2px solid #00ffea;
+    background: rgba(0, 255, 234, 0.1);
+    box-shadow: 0 0 20px #00ffea;
+    display: flex; justify-content: center; align-items: center;
+  }
+  .front::before {
+    content: "";
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    background: #00ffea;
+    box-shadow: 0 0 30px cyan;
+    position: relative;
+    z-index: 1;
+  }
+  .front  { transform: translateZ(75px); }
+  .back   { transform: rotateY(180deg) translateZ(75px); }
+  .right  { transform: rotateY(90deg) translateZ(75px); }
+  .left   { transform: rotateY(-90deg) translateZ(75px); }
+  .top    { transform: rotateX(90deg) translateZ(75px); }
+  .bottom { transform: rotateX(-90deg) translateZ(75px); }
 
-    @keyframes laser-shoot {
-      0% {
-        height: 0;
-        opacity: 1;
-        box-shadow: 0 0 5px cyan;
-      }
-      50% {
-        height: 150px;
-        opacity: 0.8;
-        box-shadow: 0 0 20px cyan;
-      }
-      100% {
-        height: 0;
-        opacity: 0;
-        box-shadow: 0 0 5px cyan;
-      }
-    }
+  @keyframes rotateCube {
+    from { transform: rotateX(0deg) rotateY(0deg); }
+    to { transform: rotateX(360deg) rotateY(360deg); }
+  }
 
-    .front  { transform: translateZ(75px); }
-    .back   { transform: rotateY(180deg) translateZ(75px); }
-    .right  { transform: rotateY(90deg) translateZ(75px); }
-    .left   { transform: rotateY(-90deg) translateZ(75px); }
-    .top    { transform: rotateX(90deg) translateZ(75px); }
-    .bottom { transform: rotateX(-90deg) translateZ(75px); }
+  .laser {
+    position: fixed;
+    width: 6px;
+    height: 20px;
+    background: #00fff0;
+    box-shadow: 0 0 10px #00fff0, 0 0 20px #00fff0;
+    border-radius: 2px;
+    animation: laserFly 2s linear infinite;
+    /* start centered on cube front face, we offset with JS-like CSS animation */
+  }
 
-    @keyframes rotateCube {
-      from {
-        transform: rotateX(0deg) rotateY(0deg);
-      }
-      to {
-        transform: rotateX(360deg) rotateY(360deg);
-      }
+  @keyframes laserFly {
+    0% {
+      transform:
+        translate(calc(50vw - 100px), calc(50vh - 75px)) /* cube center */
+        translateZ(75px)
+        translateZ(0)
+        translateY(0);
+      opacity: 1;
     }
-  </style>
+    100% {
+      transform:
+        translate(calc(50vw - 100px), calc(50vh - 75px))
+        translateZ(75px)
+        translateZ(0)
+        translateY(-100vh);
+      opacity: 0;
+    }
+  }
+</style>
 </head>
 <body>
-  <h1>Welcome to My Sci-Fi GitHub Page!</h1>
-  <p>This is a simple website with a cool sci-fi rotating cube below, featuring a glowing circle on one face with laser beams shooting out.</p>
-  <div class="cube">
-    <div class="front">
-      <div class="laser"></div>
-      <div class="laser"></div>
-      <div class="laser"></div>
-      <div class="laser"></div>
-      <div class="laser"></div>
+  <div class="scene">
+    <div class="cube">
+      <div class="front"></div>
+      <div class="back"></div>
+      <div class="right"></div>
+      <div class="left"></div>
+      <div class="top"></div>
+      <div class="bottom"></div>
     </div>
-    <div class="back"></div>
-    <div class="right"></div>
-    <div class="left"></div>
-    <div class="top"></div>
-    <div class="bottom"></div>
   </div>
+  <div class="laser"></div>
 </body>
 </html>
