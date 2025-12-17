@@ -524,8 +524,8 @@
     .marker-jardin     { top: 38%; left: 62%; }
     .marker-jameos     { top: 30%; left: 72%; }
     .marker-playa      { top: 65%; left: 46%; }
-
-    /* Futuristic topo map */
+    
+        /* Futuristic topo map */
     .topo-map {
       position: relative;
       height: 260px;
@@ -538,18 +538,20 @@
       font-size: 0.78rem;
       font-family: var(--mono);
     }
-
+    
     .topo-map .layer {
       position: absolute;
-      inset: 18% 18%;
       border-radius: 52% 48% 60% 40%;
       border: 1px solid rgba(123,228,194,0.5);
-      box-shadow:
-        0 0 20px rgba(93,199,167,0.55),
-        0 0 80px rgba(0,0,0,0.9);
-      backdrop-filter: blur(8px);
+      box-shadow: 0 0 18px rgba(93,199,167,0.45);
     }
+    
+    .topo-map .layer.layer-1 { inset: 18% 18%; }
+    .topo-map .layer.layer-2 { inset: 23% 21%; opacity: 0.7; border-style: dashed; }
+    .topo-map .layer.layer-3 { inset: 28% 24%; opacity: 0.5; border-style: dotted; }
+    .topo-map .layer.layer-4 { inset: 34% 28%; opacity: 0.35; border-style: dotted; }
 
+  
     .topo-map .layer:nth-child(1) {
       inset: 18% 18%;
     }
@@ -577,10 +579,10 @@
       mix-blend-mode: screen;
     }
 
-    .topo-pip {
+       .topo-pip {
       position: absolute;
-      width: 8px;
-      height: 8px;
+      width: 9px;
+      height: 9px;
       border-radius: 999px;
       background: #5ee0ba;
       box-shadow: 0 0 16px rgba(94,224,186,0.9);
@@ -624,7 +626,20 @@
       border: 1px solid rgba(124,227,198,0.7);
       background: radial-gradient(circle at top left, rgba(152,255,230,0.15), rgba(1,7,13,0.9));
     }
+        .topo-label {
+      position: absolute;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #d0f2e9;
+      white-space: nowrap;
+    }
+        /* POI positions */
+    .topo-poi-timanfaya  { top: 42%; left: 52%; }
+    .topo-poi-famara     { top: 34%; left: 36%; }
+    .topo-poi-jameos     { top: 58%; left: 65%; }
 
+        
     /* Location / plant / food icon band */
     .icon-band {
       display: flex;
@@ -872,56 +887,39 @@
   </div>
 </section>
 
+<section class="card">
+  <h3>Topographic future map</h3>
+  <small>Elevation scan · Lava basins · Atlantic cliffs</small>
+  <div class="topo-map" aria-label="Futuristic topographic visualisation">
+    <div class="topo-grid"></div>
 
-      <section class="card">
-        <h3>Topographic future map</h3>
-        <small>Interactive hologram concept · Lanzarote elevation &amp; waves</small>
-        <div class="topo-map" aria-label="Futuristic topographic visualisation">
-          <div class="topo-grid"></div>
-          <div class="layer"></div>
-          <div class="layer"></div>
-          <div class="layer"></div>
+    <div class="layer layer-1"></div>
+    <div class="layer layer-2"></div>
+    <div class="layer layer-3"></div>
+    <div class="layer layer-4"></div>
 
-          <div class="topo-pip"></div>
-          <div class="topo-pip"></div>
-          <div class="topo-pip"></div>
+    <!-- Points of interest -->
+    <div class="topo-pip topo-poi-timanfaya"></div>
+    <div class="topo-label topo-poi-timanfaya">TIMANFAYA RIDGE</div>
 
-          <div class="topo-caption">
-            <span>Elevation lines · Volcanic ridge</span>
-            <span>Wave energy · Atlantic edge</span>
-          </div>
+    <div class="topo-pip topo-poi-famara"></div>
+    <div class="topo-label topo-poi-famara">FAMARA ESCARPMENT</div>
 
-          <div class="topo-cta">
-            <span>Tap &amp; drag</span>
-            <span>⤭</span>
-          </div>
-        </div>
-      </section>
+    <div class="topo-pip topo-poi-jameos"></div>
+    <div class="topo-label topo-poi-jameos">JAMEOS LAVA TUBE</div>
 
-      <section class="card">
-        <h3>Icons of the island</h3>
-        <small>Plants · Food · Elements</small>
-        <div class="icon-row">
-          <div class="icon-token">
-            <span class="glyph">🌵</span>
-            <span>Cactus spines catching dusk light</span>
-          </div>
-          <div class="icon-token">
-            <span class="glyph">🪴</span>
-            <span>Aloe vera against whitewashed walls</span>
-          </div>
-          <div class="icon-token">
-            <span class="glyph">🧂</span>
-            <span>Salt crystals from Janubio</span>
-          </div>
-          <div class="icon-token">
-            <span class="glyph">🥘</span>
-            <span>Grilled fish &amp; papas arrugadas</span>
-          </div>
-        </div>
-      </section>
-    </aside>
-  </main>
+    <div class="topo-caption">
+      <span>Iso‑heights · contour 20m</span>
+      <span>Wave energy · north shore</span>
+    </div>
+
+    <div class="topo-cta">
+      <span>Scan layers</span>
+      <span>⤭</span>
+    </div>
+  </div>
+</section>
+
 
   <footer>
     <div>Subdomain travel log · Lanzarote · Designed as a bridge between ancient charts and orbital dashboards.</div>
