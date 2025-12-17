@@ -688,6 +688,24 @@
     .footer-tags span {
       opacity: 0.8;
     }
+      .brand-logo {
+    height: 20px;
+    display: block;
+    filter: grayscale(1) contrast(1.2);
+  }
+
+  .brand-pill-img {
+    border: 1px solid rgba(196,161,90,0.5);
+    border-radius: 999px;
+    padding: 0.3rem 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: radial-gradient(circle at top left, rgba(255,255,255,0.05), rgba(0,0,0,0.6));
+  }
+
+
+    
   </style>
 </head>
 <body>
@@ -714,21 +732,18 @@
         <div class="brands-strip">
           <span>Wardrobe &amp; shoreline silhouettes</span>
           <div class="hero-brands">
-            <div class="brand-pill">
-              <span class="brand-dot"></span>
-              <span>LACOSTE</span>
+            <div class="brand-pill-img">
+              <img src="images/lacoste-logo.png" alt="Lacoste logo" class="brand-logo">
             </div>
-            <div class="brand-pill">
-              <span class="brand-dot"></span>
-              <span>CALZEDONIA</span>
+            <div class="brand-pill-img">
+              <img src="images/calzedonia-logo.png" alt="Calzedonia logo" class="brand-logo">
             </div>
-            <div class="brand-pill">
-              <span class="brand-dot"></span>
-              <span>HUGO BOSS</span>
+            <div class="brand-pill-img">
+              <img src="images/hugo-boss-logo.png" alt="Hugo Boss logo" class="brand-logo">
             </div>
           </div>
         </div>
-      </div>
+
 
       <div class="hero-photo-grid" aria-label="Cinematic photographs from Lanzarote">
         <div class="photo-card photo-card-volcano tall">
