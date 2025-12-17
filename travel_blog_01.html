@@ -236,32 +236,35 @@
     .photo-card.wide {
       grid-column: span 2;
     }
+
+    /* Your specific Pexels images */
+    /* Timanfaya / ridgeline */
     .photo-card-volcano {
       background-image:
         linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0.1)),
         radial-gradient(circle at 20% 10%, rgba(255,186,120,0.55), transparent 60%),
-        url("https://images.pexels.com/photos/9798652/pexels-photo-9798652.jpeg?auto=compress&cs=tinysrgb&w=1600");
-      background-size: cover;
-      background-position: center;
+        url("https://images.pexels.com/photos/9430798/pexels-photo-9430798.jpeg?auto=compress&cs=tinysrgb&w=1600");
     }
 
-
+    /* Keep existing Atlantic waves image */
     .photo-card-coast {
       background-image:
         linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0.05)),
         url("https://images.pexels.com/photos/1655166/pexels-photo-1655166.jpeg?auto=compress&cs=tinysrgb&w=1200");
     }
 
+    /* Black sand / white foam */
     .photo-card-cactus {
       background-image:
         linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0.1)),
-        url("https://images.pexels.com/photos/212250/pexels-photo-212250.jpeg?auto=compress&cs=tinysrgb&w=1200");
+        url("https://images.pexels.com/photos/28588365/pexels-photo-28588365/free-photo-of-abstract-contrast-of-black-sand-and-white-foam.jpeg?auto=compress&cs=tinysrgb&w=1200");
     }
 
+    /* Cave / dawn‑style restaurant vibe */
     .photo-card-cave {
       background-image:
         linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0.05)),
-        url("https://images.pexels.com/photos/4726335/pexels-photo-4726335.jpeg?auto=compress&cs=tinysrgb&w=1200");
+        url("https://images.pexels.com/photos/6965536/pexels-photo-6965536.jpeg?auto=compress&cs=tinysrgb&w=1200");
     }
 
     /* Content layout */
@@ -412,7 +415,7 @@
       margin-bottom: 0.7rem;
     }
 
-    /* Ancient explorer map (CSS map) */
+    /* Ancient explorer map */
     .parchment-map {
       position: relative;
       background: radial-gradient(circle at top, #f6eddc, #d1c2a2);
@@ -425,7 +428,7 @@
       font-family: var(--serif);
       font-size: 0.8rem;
       overflow: hidden;
-      height: 260px; /* more vertical room */
+      height: 260px;
     }
 
     .parchment-map::before,
@@ -434,8 +437,8 @@
       position: absolute;
       inset: 0;
       background-image:
-        radial-gradient(circle at 10% 0, rgba(159, 105, 56, 0.6), transparent 55%),
-        radial-gradient(circle at 90% 100%, rgba(92, 63, 32, 0.7), transparent 55%);
+        radial-gradient(circle at 10% 0, rgba(159,105,56,0.6), transparent 55%),
+        radial-gradient(circle at 90% 100%, rgba(92,63,32,0.7), transparent 55%);
       mix-blend-mode: multiply;
       opacity: 0.4;
       pointer-events: none;
@@ -446,19 +449,19 @@
       z-index: 1;
     }
 
-.map-coast {
-  position: absolute;
-  inset: 14% 10%;
-  border-radius: 45% 55% 52% 48%;
-  border: 1px solid rgba(65,43,22,0.85);
-  background:
-    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.7), transparent 55%),
-    radial-gradient(circle at 70% 80%, rgba(219,182,128,0.9), transparent 60%),
-    radial-gradient(circle at 10% 90%, rgba(107,80,49,0.95), transparent 55%);
-  box-shadow:
-    0 0 0 1px rgba(86,60,33,0.9),
-    0 0 25px rgba(0,0,0,0.32);
-}
+    .map-coast {
+      position: absolute;
+      inset: 14% 10%;
+      border-radius: 45% 55% 52% 48%;
+      border: 1px solid rgba(65,43,22,0.85);
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.7), transparent 55%),
+        radial-gradient(circle at 70% 80%, rgba(219,182,128,0.9), transparent 60%),
+        radial-gradient(circle at 10% 90%, rgba(107,80,49,0.95), transparent 55%);
+      box-shadow:
+        0 0 0 1px rgba(86,60,33,0.9),
+        0 0 25px rgba(0,0,0,0.32);
+    }
 
     .map-grid-line {
       position: absolute;
@@ -481,16 +484,6 @@
     .map-grid-vert:nth-child(4) { left: 27%; }
     .map-grid-vert:nth-child(5) { left: 51%; }
     .map-grid-vert:nth-child(6) { left: 75%; }
-    
-
-    .map-legend span {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-    }
 
     .marker {
       position: absolute;
@@ -512,20 +505,44 @@
       background: #f6eddc;
     }
 
-    
     .marker-label {
+      position: absolute;
+      transform: translate(0.4rem, -0.2rem);
       font-size: 0.7rem;
       letter-spacing: 0.16em;
+      text-transform: uppercase;
+      background: rgba(246,237,220,0.9);
+      padding: 0.05rem 0.35rem;
+      border-radius: 999px;
+      border: 1px solid rgba(85,57,33,0.7);
+      color: #3b2615;
+      white-space: nowrap;
     }
 
-    /* Example marker placements (approximate “map” positions) */
     .marker-timanfaya  { top: 43%; left: 37%; }
     .marker-famara     { top: 26%; left: 31%; }
     .marker-jardin     { top: 38%; left: 62%; }
     .marker-jameos     { top: 30%; left: 72%; }
     .marker-playa      { top: 65%; left: 46%; }
-    
-        /* Futuristic topo map */
+
+    .map-legend {
+      position: static;
+      margin-top: 0.9rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.3rem;
+    }
+
+    .map-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    /* Futuristic topo map */
     .topo-map {
       position: relative;
       height: 260px;
@@ -538,35 +555,18 @@
       font-size: 0.78rem;
       font-family: var(--mono);
     }
-    
+
     .topo-map .layer {
       position: absolute;
       border-radius: 52% 48% 60% 40%;
       border: 1px solid rgba(123,228,194,0.5);
       box-shadow: 0 0 18px rgba(93,199,167,0.45);
     }
-    
+
     .topo-map .layer.layer-1 { inset: 18% 18%; }
     .topo-map .layer.layer-2 { inset: 23% 21%; opacity: 0.7; border-style: dashed; }
     .topo-map .layer.layer-3 { inset: 28% 24%; opacity: 0.5; border-style: dotted; }
     .topo-map .layer.layer-4 { inset: 34% 28%; opacity: 0.35; border-style: dotted; }
-
-  
-    .topo-map .layer:nth-child(1) {
-      inset: 18% 18%;
-    }
-
-    .topo-map .layer:nth-child(2) {
-      inset: 24% 22%;
-      opacity: 0.6;
-      border-style: dashed;
-    }
-
-    .topo-map .layer:nth-child(3) {
-      inset: 30% 26%;
-      opacity: 0.4;
-      border-style: dotted;
-    }
 
     .topo-grid {
       position: absolute;
@@ -579,7 +579,7 @@
       mix-blend-mode: screen;
     }
 
-       .topo-pip {
+    .topo-pip {
       position: absolute;
       width: 9px;
       height: 9px;
@@ -588,9 +588,19 @@
       box-shadow: 0 0 16px rgba(94,224,186,0.9);
     }
 
-    .topo-pip:nth-child(1) { top: 42%; left: 52%; }
-    .topo-pip:nth-child(2) { top: 58%; left: 38%; }
-    .topo-pip:nth-child(3) { top: 32%; left: 63%; }
+    .topo-label {
+      position: absolute;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #d0f2e9;
+      white-space: nowrap;
+    }
+
+    /* POI positions */
+    .topo-poi-timanfaya  { top: 42%; left: 52%; }
+    .topo-poi-famara     { top: 34%; left: 36%; }
+    .topo-poi-jameos     { top: 58%; left: 65%; }
 
     .topo-caption {
       position: absolute;
@@ -626,20 +636,7 @@
       border: 1px solid rgba(124,227,198,0.7);
       background: radial-gradient(circle at top left, rgba(152,255,230,0.15), rgba(1,7,13,0.9));
     }
-        .topo-label {
-      position: absolute;
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: #d0f2e9;
-      white-space: nowrap;
-    }
-        /* POI positions */
-    .topo-poi-timanfaya  { top: 42%; left: 52%; }
-    .topo-poi-famara     { top: 34%; left: 36%; }
-    .topo-poi-jameos     { top: 58%; left: 65%; }
 
-        
     /* Location / plant / food icon band */
     .icon-band {
       display: flex;
@@ -740,7 +737,7 @@
           <div class="label">Atlantic waves · Sea spray on lava</div>
         </div>
         <div class="photo-card photo-card-cactus">
-          <div class="label">Cactus terrace · Aloe &amp; ash</div>
+          <div class="label">Black sand · White foam</div>
         </div>
         <div class="photo-card photo-card-cave">
           <div class="label">Cave restaurant · Basalt reflections</div>
@@ -850,76 +847,85 @@
     </section>
 
     <!-- Maps / visualisation column -->
-   <section class="card">
-  <h3>Ancient explorer map</h3>
-  <small>Parchement · Wind‑worn edges · Hand‑inked coast</small>
-  <div class="parchment-map" aria-label="Hand‑styled map of Lanzarote">
-    <div class="parchment-map-inner">
-      <div class="map-coast"></div>
+    <aside class="maps-column">
+      <section class="card">
+        <h3>Ancient explorer map</h3>
+        <small>Parchement · Wind‑worn edges · Hand‑inked coast</small>
+        <div class="parchment-map" aria-label="Hand‑styled map of Lanzarote">
+          <div class="parchment-map-inner">
+            <div class="map-coast"></div>
 
-      <!-- grid lines remain the same -->
+            <!-- grid lines -->
+            <div class="map-grid-line"></div>
+            <div class="map-grid-line"></div>
+            <div class="map-grid-line"></div>
 
-      <!-- Markers with shorter labels -->
-      <div class="marker marker-timanfaya">
-        <div class="marker-label">Timanfaya</div>
-      </div>
-      <div class="marker marker-famara">
-        <div class="marker-label">Famara cliffs</div>
-      </div>
-      <div class="marker marker-jardin">
-        <div class="marker-label">Cactus garden</div>
-      </div>
-      <div class="marker marker-jameos">
-        <div class="marker-label">Jameos cave</div>
-      </div>
-      <div class="marker marker-playa">
-        <div class="marker-label">Papagayo bay</div>
-      </div>
-    </div>
-  </div>
+            <div class="map-grid-vert"></div>
+            <div class="map-grid-vert"></div>
+            <div class="map-grid-vert"></div>
 
-  <div class="map-legend">
-    <span>✶ Lava fields</span>
-    <span>▲ Viewpoints</span>
-    <span>◼ Cave dining</span>
-    <span>✜ Cactus terraces</span>
-    <span>⚒ Dig sites</span>
-  </div>
-</section>
+            <!-- Markers with shorter labels -->
+            <div class="marker marker-timanfaya">
+              <div class="marker-label">Timanfaya</div>
+            </div>
+            <div class="marker marker-famara">
+              <div class="marker-label">Famara cliffs</div>
+            </div>
+            <div class="marker marker-jardin">
+              <div class="marker-label">Cactus garden</div>
+            </div>
+            <div class="marker marker-jameos">
+              <div class="marker-label">Jameos cave</div>
+            </div>
+            <div class="marker marker-playa">
+              <div class="marker-label">Papagayo bay</div>
+            </div>
+          </div>
+        </div>
 
-<section class="card">
-  <h3>Topographic future map</h3>
-  <small>Elevation scan · Lava basins · Atlantic cliffs</small>
-  <div class="topo-map" aria-label="Futuristic topographic visualisation">
-    <div class="topo-grid"></div>
+        <div class="map-legend">
+          <span>✶ Lava fields</span>
+          <span>▲ Viewpoints</span>
+          <span>◼ Cave dining</span>
+          <span>✜ Cactus terraces</span>
+          <span>⚒ Dig sites</span>
+        </div>
+      </section>
 
-    <div class="layer layer-1"></div>
-    <div class="layer layer-2"></div>
-    <div class="layer layer-3"></div>
-    <div class="layer layer-4"></div>
+      <section class="card">
+        <h3>Topographic future map</h3>
+        <small>Elevation scan · Lava basins · Atlantic cliffs</small>
+        <div class="topo-map" aria-label="Futuristic topographic visualisation">
+          <div class="topo-grid"></div>
 
-    <!-- Points of interest -->
-    <div class="topo-pip topo-poi-timanfaya"></div>
-    <div class="topo-label topo-poi-timanfaya">TIMANFAYA RIDGE</div>
+          <div class="layer layer-1"></div>
+          <div class="layer layer-2"></div>
+          <div class="layer layer-3"></div>
+          <div class="layer layer-4"></div>
 
-    <div class="topo-pip topo-poi-famara"></div>
-    <div class="topo-label topo-poi-famara">FAMARA ESCARPMENT</div>
+          <!-- Points of interest -->
+          <div class="topo-pip topo-poi-timanfaya"></div>
+          <div class="topo-label topo-poi-timanfaya">TIMANFAYA RIDGE</div>
 
-    <div class="topo-pip topo-poi-jameos"></div>
-    <div class="topo-label topo-poi-jameos">JAMEOS LAVA TUBE</div>
+          <div class="topo-pip topo-poi-famara"></div>
+          <div class="topo-label topo-poi-famara">FAMARA ESCARPMENT</div>
 
-    <div class="topo-caption">
-      <span>Iso‑heights · contour 20m</span>
-      <span>Wave energy · north shore</span>
-    </div>
+          <div class="topo-pip topo-poi-jameos"></div>
+          <div class="topo-label topo-poi-jameos">JAMEOS LAVA TUBE</div>
 
-    <div class="topo-cta">
-      <span>Scan layers</span>
-      <span>⤭</span>
-    </div>
-  </div>
-</section>
+          <div class="topo-caption">
+            <span>Iso‑heights · contour 20m</span>
+            <span>Wave energy · north shore</span>
+          </div>
 
+          <div class="topo-cta">
+            <span>Scan layers</span>
+            <span>⤭</span>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </main>
 
   <footer>
     <div>Subdomain travel log · Lanzarote · Designed as a bridge between ancient charts and orbital dashboards.</div>
