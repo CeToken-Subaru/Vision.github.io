@@ -444,104 +444,103 @@
       pointer-events: none;
     }
 
-    .parchment-map-inner {
-      position: relative;
-      z-index: 1;
-    }
+.parchment-map-inner {
+  position: relative;
+  z-index: 1;
+}
 
-    .map-coast {
-      position: absolute;
-      inset: 14% 10%;
-      border-radius: 45% 55% 52% 48%;
-      border: 1px solid rgba(65,43,22,0.85);
-      background:
-        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.7), transparent 55%),
-        radial-gradient(circle at 70% 80%, rgba(219,182,128,0.9), transparent 60%),
-        radial-gradient(circle at 10% 90%, rgba(107,80,49,0.95), transparent 55%);
-      box-shadow:
-        0 0 0 1px rgba(86,60,33,0.9),
-        0 0 25px rgba(0,0,0,0.32);
-    }
+/* island */
+.map-coast {
+  position: absolute;
+  inset: 18% 14%;
+  border-radius: 45% 55% 52% 48%;
+  border: 1px solid rgba(65,43,22,0.85);
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.7), transparent 55%),
+    radial-gradient(circle at 70% 80%, rgba(219,182,128,0.9), transparent 60%),
+    radial-gradient(circle at 10% 90%, rgba(107,80,49,0.95), transparent 55%);
+  box-shadow:
+    0 0 0 1px rgba(86,60,33,0.9),
+    0 0 25px rgba(0,0,0,0.32);
+}
 
-    .map-grid-line {
-      position: absolute;
-      border-top: 1px dashed rgba(99,72,41,0.4);
-      left: 8%;
-      right: 8%;
-    }
+/* use explicit classes instead of nth-child */
+.map-grid-line {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  border-top: 1px dashed rgba(99,72,41,0.35);
+}
+.map-grid-line.row-1 { top: 32%; }
+.map-grid-line.row-2 { top: 48%; }
+.map-grid-line.row-3 { top: 64%; }
 
-    .map-grid-line:nth-child(1) { top: 32%; }
-    .map-grid-line:nth-child(2) { top: 48%; }
-    .map-grid-line:nth-child(3) { top: 64%; }
+.map-grid-vert {
+  position: absolute;
+  top: 22%;
+  bottom: 22%;
+  border-left: 1px dashed rgba(99,72,41,0.35);
+}
+.map-grid-vert.col-1 { left: 30%; }
+.map-grid-vert.col-2 { left: 50%; }
+.map-grid-vert.col-3 { left: 70%; }
 
-    .map-grid-vert {
-      position: absolute;
-      border-left: 1px dashed rgba(99,72,41,0.4);
-      top: 18%;
-      bottom: 18%;
-    }
+.marker {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #b4332a;
+  box-shadow:
+    0 0 0 2px #f6eddc,
+    0 0 0 4px rgba(160,68,39,0.6);
+  transform: translate(-50%, -50%);
+}
 
-    .map-grid-vert:nth-child(4) { left: 27%; }
-    .map-grid-vert:nth-child(5) { left: 51%; }
-    .map-grid-vert:nth-child(6) { left: 75%; }
+.marker::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: inherit;
+  background: #f6eddc;
+}
 
-    .marker {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: #b4332a;
-      box-shadow:
-        0 0 0 2px #f6eddc,
-        0 0 0 4px rgba(160,68,39,0.6);
-      transform: translate(-50%, -50%);
-    }
+.marker-label {
+  position: absolute;
+  transform: translate(0.6rem, 0.1rem); /* a bit lower so it sits on the island */
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: rgba(246,237,220,0.95);
+  padding: 0.08rem 0.4rem;
+  border-radius: 999px;
+  border: 1px solid rgba(85,57,33,0.7);
+  color: #3b2615;
+  white-space: nowrap;
+}
 
-    .marker::after {
-      content: "";
-      position: absolute;
-      inset: 3px;
-      border-radius: inherit;
-      background: #f6eddc;
-    }
+/* marker positions – centred inside island */
+.marker-timanfaya  { top: 52%; left: 46%; }
+.marker-famara     { top: 38%; left: 34%; }
+.marker-jardin     { top: 44%; left: 62%; }
+.marker-jameos     { top: 34%; left: 70%; }
+.marker-playa      { top: 64%; left: 52%; }
 
-    .marker-label {
-      position: absolute;
-      transform: translate(0.4rem, -0.2rem);
-      font-size: 0.7rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      background: rgba(246,237,220,0.9);
-      padding: 0.05rem 0.35rem;
-      border-radius: 999px;
-      border: 1px solid rgba(85,57,33,0.7);
-      color: #3b2615;
-      white-space: nowrap;
-    }
-
-    .marker-timanfaya  { top: 43%; left: 37%; }
-    .marker-famara     { top: 26%; left: 31%; }
-    .marker-jardin     { top: 38%; left: 62%; }
-    .marker-jameos     { top: 30%; left: 72%; }
-    .marker-playa      { top: 65%; left: 46%; }
-
-    .map-legend {
-      position: static;
-      margin-top: 0.9rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem 1.3rem;
-    }
-
-    .map-legend span {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-    }
-
+.map-legend {
+  position: static;
+  margin-top: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.3rem;
+}
+.map-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
     /* Futuristic topo map */
     .topo-map {
       position: relative;
@@ -847,50 +846,49 @@
     </section>
 
     <!-- Maps / visualisation column -->
-    <aside class="maps-column">
-      <section class="card">
-        <h3>Ancient explorer map</h3>
-        <small>Parchement · Wind‑worn edges · Hand‑inked coast</small>
-        <div class="parchment-map" aria-label="Hand‑styled map of Lanzarote">
-          <div class="parchment-map-inner">
-            <div class="map-coast"></div>
+ <section class="card">
+  <h3>Ancient explorer map</h3>
+  <small>Parchement · Wind‑worn edges · Hand‑inked coast</small>
+  <div class="parchment-map" aria-label="Hand‑styled map of Lanzarote">
+    <div class="parchment-map-inner">
+      <div class="map-coast"></div>
 
-            <!-- grid lines -->
-            <div class="map-grid-line"></div>
-            <div class="map-grid-line"></div>
-            <div class="map-grid-line"></div>
+      <!-- grid lines -->
+      <div class="map-grid-line row-1"></div>
+      <div class="map-grid-line row-2"></div>
+      <div class="map-grid-line row-3"></div>
 
-            <div class="map-grid-vert"></div>
-            <div class="map-grid-vert"></div>
-            <div class="map-grid-vert"></div>
+      <div class="map-grid-vert col-1"></div>
+      <div class="map-grid-vert col-2"></div>
+      <div class="map-grid-vert col-3"></div>
 
-            <!-- Markers with shorter labels -->
-            <div class="marker marker-timanfaya">
-              <div class="marker-label">Timanfaya</div>
-            </div>
-            <div class="marker marker-famara">
-              <div class="marker-label">Famara cliffs</div>
-            </div>
-            <div class="marker marker-jardin">
-              <div class="marker-label">Cactus garden</div>
-            </div>
-            <div class="marker marker-jameos">
-              <div class="marker-label">Jameos cave</div>
-            </div>
-            <div class="marker marker-playa">
-              <div class="marker-label">Papagayo bay</div>
-            </div>
-          </div>
-        </div>
+      <!-- markers -->
+      <div class="marker marker-timanfaya">
+        <div class="marker-label">Timanfaya</div>
+      </div>
+      <div class="marker marker-famara">
+        <div class="marker-label">Famara cliffs</div>
+      </div>
+      <div class="marker marker-jardin">
+        <div class="marker-label">Cactus garden</div>
+      </div>
+      <div class="marker marker-jameos">
+        <div class="marker-label">Jameos cave</div>
+      </div>
+      <div class="marker marker-playa">
+        <div class="marker-label">Papagayo bay</div>
+      </div>
+    </div>
+  </div>
 
-        <div class="map-legend">
-          <span>✶ Lava fields</span>
-          <span>▲ Viewpoints</span>
-          <span>◼ Cave dining</span>
-          <span>✜ Cactus terraces</span>
-          <span>⚒ Dig sites</span>
-        </div>
-      </section>
+  <div class="map-legend">
+    <span>✶ Lava fields</span>
+    <span>▲ Viewpoints</span>
+    <span>◼ Cave dining</span>
+    <span>✜ Cactus terraces</span>
+    <span>⚒ Dig sites</span>
+  </div>
+</section>
 
       <section class="card">
         <h3>Topographic future map</h3>
