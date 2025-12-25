@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Xi’an Field Log – Terracotta & Neon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --ink: #050509;
+      --gold: #f0c167;
+      --crimson: #c33b32;
+      --jade: #3eb38f;
+      --neon-pink: #ff4b9f;
+      --neon-cyan: #39d5ff;
+      --paper: #f3e4c8;
+      --paper-deep: #cdb18a;
+      --accent-soft: #9c7c4e;
+      --sans: "Helvetica Neue", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      --serif: "Georgia", "Times New Roman", serif;
+      --mono: "Space Mono", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: var(--sans);
+      color: #f8f4ea;
+      background:
+        radial-gradient(circle at top, #2b1d14 0, #0b0604 40%, #020008 100%),
+        url("https://images.pexels.com/photos/2078266/pexels-photo-2078266.jpeg?auto=compress&cs=tinysrgb&w=1600") center/cover fixed;
+      background-blend-mode: overlay;
+    }
+
+    a {
+      color: var(--neon-cyan);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Top bar / subdomain */
+    .top-bar {
+      padding: 0.8rem 6vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(240,193,103,0.18);
+      background: linear-gradient(to right, rgba(5,5,9,0.96), rgba(10,7,5,0.94));
+      color: #d3c6af;
+    }
+    .top-bar .subdomain {
+      font-family: var(--mono);
+    }
+    .top-bar strong {
+      color: var(--gold);
+    }
+
+    /* Hero */
+    header.hero {
+      padding: 3.5rem 6vw 2.5rem;
+      border-bottom: 1px solid rgba(240,193,103,0.16);
+      background:
+        radial-gradient(circle at top, rgba(255,240,210,0.08), transparent 60%),
+        linear-gradient(to bottom, rgba(7,3,2,0.95), rgba(5,2,2,0.9));
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.3fr);
+      gap: 3rem;
+      align-items: center;
+    }
+    @media (max-width: 960px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hero-kicker {
+      font-size: 0.75rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #c7b89d;
+      margin-bottom: 0.75rem;
+    }
+    .hero-title {
+      font-family: var(--serif);
+      text-transform: uppercase;
+      font-size: clamp(2.4rem, 3.4vw, 3.4rem);
+      letter-spacing: 0.08em;
+      line-height: 1.05;
+      margin-bottom: 0.9rem;
+    }
+    .hero-subtitle {
+      font-size: 0.96rem;
+      color: #e8dec9;
+      max-width: 32rem;
+      margin-bottom: 1.4rem;
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.1rem;
+      font-size: 0.8rem;
+      color: #b3a792;
+      margin-bottom: 1.7rem;
+    }
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .hero-meta .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    /* Neon / cyber tags */
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: #d0c4b1;
+    }
+    .hero-chip {
+      border-radius: 999px;
+      border: 1px solid rgba(240,193,103,0.35);
+      padding: 0.35rem 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.08), rgba(0,0,0,0.9));
+    }
+    .hero-chip span.icon {
+      font-size: 0.9rem;
+    }
+
+    /* Cinematic photo grid */
+    .hero-photo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 9.5rem;
+      gap: 0.8rem;
+    }
+    .photo-card {
+      position: relative;
+      border-radius: 1.1rem;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      box-shadow:
+        0 18px 50px rgba(0,0,0,0.85),
+        0 0 0 1px rgba(250,220,165,0.22);
+      filter: saturate(1.05) contrast(1.12);
+    }
+    .photo-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.1)),
+        radial-gradient(circle at top, rgba(255,255,255,0.15), transparent 55%);
+      mix-blend-mode: soft-light;
+    }
+    .photo-card .label {
+      position: absolute;
+      left: 0.9rem;
+      bottom: 0.75rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #fdf7ea;
+      text-shadow: 0 2px 8px #000;
+    }
+    .photo-card.tall { grid-row: span 2; }
+    .photo-card.wide { grid-column: span 2; }
+
+    .photo-terracotta {
+      background-image:
+        url("https://images.pexels.com/photos/2570059/pexels-photo-2570059.jpeg?auto=compress&cs=tinysrgb&w=1600");
+      background-position: center 35%;
+    }
+    .photo-mountains {
+      background-image:
+        url("https://images.pexels.com/photos/3014731/pexels-photo-3014731.jpeg?auto=compress&cs=tinysrgb&w=1600");
+    }
+    .photo-temple {
+      background-image:
+        url("https://images.pexels.com/photos/1642910/pexels-photo-1642910.jpeg?auto=compress&cs=tinysrgb&w=1600");
+    }
+    .photo-neon {
+      background-image:
+        url("https://images.pexels.com/photos/1707823/pexels-photo-1707823.jpeg?auto=compress&cs=tinysrgb&w=1600");
+    }
+
+    /* Layout main */
+    main {
+      padding: 2.5rem 6vw 3.5rem;
+      display: grid;
+      grid-template-columns: minmax(0, 3.1fr) minmax(0, 2.4fr);
+      gap: 3rem;
+    }
+    @media (max-width: 980px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .article {
+      max-width: 40rem;
+    }
+    .article h2 {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      text-transform: uppercase;
+      letter-spacing: 0.28em;
+      margin-bottom: 0.9rem;
+      color: #f1dfc2;
+    }
+    .article p {
+      font-size: 0.95rem;
+      color: #e5d5c2;
+      margin-bottom: 1rem;
+    }
+    .article .lede {
+      color: #f5e6cf;
+    }
+    .article .dropcap::first-letter {
+      float: left;
+      font-family: var(--serif);
+      font-size: 2.6rem;
+      line-height: 1;
+      padding-right: 0.3rem;
+      padding-top: 0.1rem;
+      color: var(--gold);
+    }
+    .article hr {
+      border: none;
+      border-top: 1px solid rgba(241,210,160,0.26);
+      margin: 1.7rem 0 1.3rem;
+    }
+
+    .icon-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin: 0.9rem 0 1.3rem;
+    }
+    .icon-pill {
+      border-radius: 999px;
+      border: 1px solid rgba(243,214,171,0.5);
+      padding: 0.35rem 0.8rem;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: radial-gradient(circle at top left, rgba(255,255,255,0.06), rgba(0,0,0,0.85));
+    }
+    .icon-pill span.glyph {
+      font-size: 0.95rem;
+    }
+
+    .timeline {
+      border-left: 1px solid rgba(243,214,171,0.35);
+      padding-left: 1.2rem;
+      margin: 1.3rem 0 0.4rem;
+    }
+    .timeline-stop {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    .timeline-stop::before {
+      content: "";
+      position: absolute;
+      left: -1.4rem;
+      top: 0.35rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 1px solid var(--gold);
+      background: #060407;
+      box-shadow: 0 0 0 4px rgba(240,193,103,0.22);
+    }
+    .timeline-stop h3 {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #f1dfc5;
+      margin-bottom: 0.25rem;
+    }
+    .timeline-stop p {
+      font-size: 0.9rem;
+      color: #e1d0bc;
+    }
+
+    /* Right column */
+    .maps-column {
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+    .card {
+      position: relative;
+      border-radius: 1.2rem;
+      padding: 1.1rem 1.1rem 1.25rem;
+      border: 1px solid rgba(240,193,103,0.2);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.06), rgba(6,4,3,0.98));
+      box-shadow: 0 16px 42px rgba(0,0,0,0.9);
+      overflow: hidden;
+    }
+    .card h3 {
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      letter-spacing: 0.24em;
+      color: #f2e0c2;
+      margin-bottom: 0.55rem;
+    }
+    .card small {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #bda993;
+      margin-bottom: 0.7rem;
+    }
+
+    /* Ancient Chinese map */
+    .map-scroll {
+      position: relative;
+      height: 230px;
+      border-radius: 1rem;
+      background:
+        radial-gradient(circle at top, #f9ebd1, #e0c8a1 55%, #c7aa7e 100%);
+      box-shadow:
+        inset 0 0 0 1px rgba(129,97,59,0.55),
+        inset 0 0 40px rgba(0,0,0,0.28);
+      overflow: hidden;
+      color: #3d2917;
+      font-family: var(--serif);
+    }
+    .map-scroll::before,
+    .map-scroll::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 10% 0, rgba(155,107,54,0.45), transparent 60%),
+        radial-gradient(circle at 90% 100%, rgba(104,74,44,0.6), transparent 60%);
+      mix-blend-mode: multiply;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .scroll-inner {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+    }
+
+    .scroll-landmass {
+      position: absolute;
+      inset: 18% 12%;
+      border-radius: 52% 48% 60% 40%;
+      background:
+        radial-gradient(circle at 30% 20%, #fdf4dd, transparent 55%),
+        radial-gradient(circle at 70% 75%, #d3b47f, transparent 60%),
+        radial-gradient(circle at 10% 90%, #9b7647, transparent 55%);
+      box-shadow:
+        0 0 0 1px rgba(115,83,49,0.9),
+        0 0 25px rgba(0,0,0,0.3);
+    }
+
+    .scroll-path {
+      position: absolute;
+      inset: 27% 15% 35% 18%;
+      border-radius: 999px;
+      border-top: 2px solid rgba(210,80,70,0.85);
+      border-image: linear-gradient(to right, rgba(210,80,70,0), rgba(210,80,70,1), rgba(210,80,70,0)) 1;
+    }
+
+    .waypoint {
+      position: absolute;
+      width: 11px;
+      height: 11px;
+      border-radius: 999px;
+      background: #e94d3f;
+      box-shadow:
+        0 0 0 2px #f6eddc,
+        0 0 0 5px rgba(190,72,52,0.6);
+      transform: translate(-50%, -50%);
+    }
+    .waypoint::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: inherit;
+      background: #f6eddc;
+    }
+    .way-label {
+      position: absolute;
+      transform: translate(0.5rem, -0.2rem);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      background: rgba(246,237,220,0.97);
+      padding: 0.05rem 0.4rem;
+      border-radius: 999px;
+      border: 1px solid rgba(96,66,38,0.85);
+      color: #3b2617;
+      white-space: nowrap;
+    }
+    .wp-xian   { top: 60%; left: 40%; }
+    .wp-pagoda { top: 45%; left: 52%; }
+    .wp-huashan{ top: 34%; left: 65%; }
+
+    .map-legend {
+      margin-top: 0.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.3rem;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #e6d5bf;
+    }
+
+    /* Topographic hologram */
+    .topo-map {
+      position: relative;
+      height: 230px;
+      border-radius: 1rem;
+      background:
+        radial-gradient(circle at top, rgba(99,237,201,0.28), transparent 55%),
+        radial-gradient(circle at bottom, #050914, #020306);
+      overflow: hidden;
+      color: #c8f0e5;
+      font-family: var(--mono);
+    }
+
+    .topo-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(90,190,195,0.16) 1px, transparent 1px),
+        linear-gradient(to top, rgba(90,190,195,0.16) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.5;
+      mix-blend-mode: screen;
+    }
+
+    .topo-layer {
+      position: absolute;
+      border-radius: 52% 48% 60% 40%;
+      border: 1px solid rgba(141,245,210,0.8);
+      box-shadow: 0 0 24px rgba(83,233,189,0.6);
+    }
+    .topo-layer.l1 { inset: 20% 20%; }
+    .topo-layer.l2 { inset: 26% 23%; border-style: dashed; opacity: 0.75; }
+    .topo-layer.l3 { inset: 32% 26%; border-style: dotted; opacity: 0.6; }
+    .topo-layer.l4 { inset: 38% 30%; border-style: dotted; opacity: 0.4; }
+
+    .topo-pip {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--neon-cyan);
+      box-shadow: 0 0 16px rgba(75,230,205,0.95);
+    }
+    .topo-label {
+      position: absolute;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #dcf9f0;
+      white-space: nowrap;
+      transform: translate(0.5rem, -0.2rem);
+    }
+    .poi-terracotta { top: 55%; left: 47%; }
+    .poi-huashan   { top: 35%; left: 60%; }
+    .poi-citywall  { top: 46%; left: 36%; }
+
+    .topo-caption {
+      position: absolute;
+      left: 1.1rem;
+      right: 1.1rem;
+      bottom: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #bfece2;
+    }
+    .topo-cta {
+      position: absolute;
+      top: 0.9rem;
+      right: 1.1rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--neon-cyan);
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(110,244,219,0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: radial-gradient(circle at top left, rgba(150,255,240,0.18), rgba(5,9,18,0.95));
+    }
+
+    /* Archaeology / astro HUD cards */
+    .hud-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin-top: 0.6rem;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+    }
+    .hud {
+      position: relative;
+      padding: 0.6rem 0.7rem 0.7rem;
+      border-radius: 0.9rem;
+      border: 1px solid rgba(150,236,230,0.7);
+      background:
+        radial-gradient(circle at top, rgba(105,226,222,0.18), transparent 60%),
+        rgba(3,8,14,0.96);
+      color: #e9feff;
+      overflow: hidden;
+    }
+    .hud::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        conic-gradient(from 180deg, rgba(120,247,255,0.06), transparent 45%, rgba(247,120,197,0.06), transparent 85%, rgba(120,247,255,0.08));
+      opacity: 0.45;
+      pointer-events: none;
+    }
+    .hud-label {
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      margin-bottom: 0.35rem;
+      color: #9fe3ff;
+    }
+    .hud-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.4rem;
+      margin-bottom: 0.15rem;
+    }
+    .hud-key {
+      opacity: 0.7;
+    }
+    .hud-val {
+      text-align: right;
+      color: #fdfdfd;
+    }
+
+    /* Footer */
+    footer {
+      padding: 1.6rem 6vw 2.1rem;
+      border-top: 1px solid rgba(240,193,103,0.18);
+      font-size: 0.72rem;
+      color: #c2b49e;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      background: radial-gradient(circle at top, rgba(0,0,0,0.7), rgba(0,0,0,0.96));
+    }
+    .footer-tags {
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <span class="subdomain">atlas.main-domain.com / <strong>xian.log</strong></span>
+    <span>34°N · Loess plateau · Local time offset</span>
+  </div>
+
+  <header class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-kicker">Field notes · China · Shaanxi</div>
+        <h1 class="hero-title">Xi’an: Terracotta, Peaks &amp; Neon Rain</h1>
+        <p class="hero-subtitle">
+          A journey through burial pits and city walls, where clay soldiers stand in silent ranks under soft earth, and nights burn with magenta neon and chrome mecha dragons drifting over the skyline.
+        </p>
+
+        <div class="hero-meta">
+          <span><span class="dot"></span> Expedition log · 4 days in Xi’an</span>
+          <span>Sites · Terracotta Army · Hua Shan · City Wall</span>
+          <span>Palette · Warm jade, kiln red, electric cyan</span>
+        </div>
+
+        <div class="hero-tags">
+          <div class="hero-chip"><span class="icon">🏺</span><span>Archaeology</span></div>
+          <div class="hero-chip"><span class="icon">🌌</span><span>Astro instruments</span></div>
+          <div class="hero-chip"><span class="icon">⚙️</span><span>Mecha calligraphy</span></div>
+          <div class="hero-chip"><span class="icon">🌃</span><span>Cyberpunk alleys</span></div>
+        </div>
+      </div>
+
+      <div class="hero-photo-grid" aria-label="Cinematic photographs from Xi’an">
+        <div class="photo-card photo-terracotta tall">
+          <div class="label">Terracotta ranks · Pit 1</div>
+        </div>
+        <div class="photo-card photo-mountains wide">
+          <div class="label">Hua Shan · Granite spine</div>
+        </div>
+        <div class="photo-card photo-temple">
+          <div class="label">City walls · Lantern roofs</div>
+        </div>
+        <div class="photo-card photo-neon">
+          <div class="label">Neon market · Mecha signs</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="article">
+      <h2>Arrival in Xi’an</h2>
+      <p class="lede dropcap">
+        Xi’an feels like stepping into a palimpsest: Tang‑dynasty avenues and drum towers pressed under holographic billboards, ancient star maps flickering beside magenta‑lit metro entrances.
+      </p>
+      <p>
+        The daylight is all stone, clay and muted loess dust; the night replaces it with reflected neon, chrome railings and mech‑style characters marching down glass facades like illuminated calligraphy.
+      </p>
+
+      <div class="icon-row">
+        <div class="icon-pill"><span class="glyph">🗡️</span><span>Terracotta warriors</span></div>
+        <div class="icon-pill"><span class="glyph">⛰️</span><span>Huashan ridges</span></div>
+        <div class="icon-pill"><span class="glyph">🏯</span><span>City walls</span></div>
+        <div class="icon-pill"><span class="glyph">🎴</span><span>Neon hanzi</span></div>
+      </div>
+
+      <hr>
+
+      <h2>Day log · Pits &amp; peaks</h2>
+      <div class="timeline">
+        <article class="timeline-stop">
+          <h3>Lintong · Terracotta Army</h3>
+          <p>
+            The pits open like hangars, rank after rank of clay soldiers under cool museum light, every cracked eyelid and braided knot visible as if the kiln fired only yesterday.
+          </p>
+        </article>
+        <article class="timeline-stop">
+          <h3>Xi’an City Wall · Dusk ride</h3>
+          <p>
+            Bicycles skim along the top of the Ming wall while the city ignites below, LED billboards burning through mist behind silhouettes of gate towers and lantern‑lit courtyards.
+          </p>
+        </article>
+        <article class="timeline-stop">
+          <h3>Hua Shan · Spine of stone</h3>
+          <p>
+            Cable cars climb into cloud; steel chains and incense smoke mark the narrow stairways, while distant ridges fade into cyan haze like a wireframe topographic render.
+          </p>
+        </article>
+        <article class="timeline-stop">
+          <h3>Muslim Quarter · Neon steam</h3>
+          <p>
+            Skewers flare over charcoal, sugar syrup stretches into silver threads and holographic dragons coil around kanji signs, turning the alley into a moving light installation.
+          </p>
+        </article>
+      </div>
+
+      <hr>
+
+      <h2>Clay, bronze &amp; circuits</h2>
+      <p>
+        Museum halls shift from bronze chariots and lacquer boxes to glass cases humming with projection, each artifact wrapped in holographic captions tracing trade routes and eclipse records across the ceiling.
+      </p>
+      <p>
+        Outside, shop signs remix traditional brush strokes into mecha‑style emblems, neon outlines of guardians and qilin standing watch above doorways like digital versions of old stone lions.
+      </p>
+    </section>
+
+    <aside class="maps-column">
+      <section class="card">
+        <h3>Ancient route scroll</h3>
+        <small>Silk map · Xi’an basin · Waypoints engraved</small>
+        <div class="map-scroll" aria-label="Stylised ancient map of Xi’an and surroundings">
+          <div class="scroll-inner">
+            <div class="scroll-landmass"></div>
+
+            <div class="scroll-path"></div>
+
+            <div class="waypoint wp-xian">
+              <div class="way-label">Xi’an · City Wall</div>
+            </div>
+            <div class="waypoint wp-pagoda">
+              <div class="way-label">Wild Goose Pagoda</div>
+            </div>
+            <div class="waypoint wp-huashan">
+              <div class="way-label">Mount Hua</div>
+            </div>
+          </div>
+        </div>
+        <div class="map-legend">
+          <span>✶ Capitals</span>
+          <span>◼ Temple / pagoda</span>
+          <span>▲ Mountain shrines</span>
+          <span>⤷ Route path</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>Topographic holo‑scan</h3>
+        <small>Elevation shell · Basin and peaks</small>
+        <div class="topo-map" aria-label="Futuristic topographic map of Xi’an region">
+          <div class="topo-grid"></div>
+
+          <div class="topo-layer l1"></div>
+          <div class="topo-layer l2"></div>
+          <div class="topo-layer l3"></div>
+          <div class="topo-layer l4"></div>
+
+          <div class="topo-pip poi-terracotta"></div>
+          <div class="topo-label poi-terracotta">TERRACOTTA COMPLEX</div>
+
+          <div class="topo-pip poi-huashan"></div>
+          <div class="topo-label poi-huashan">HUA SHAN MASSIF</div>
+
+          <div class="topo-pip poi-citywall"></div>
+          <div class="topo-label poi-citywall">XI’AN CITY WALL</div>
+
+          <div class="topo-caption">
+            <span>Contours · 50 m spacing</span>
+            <span>Overlay · routes &amp; shrines</span>
+          </div>
+          <div class="topo-cta">
+            <span>Cycle layers</span>
+            <span>⤭</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>Archaeology &amp; sky instruments</h3>
+        <small>Prometheus‑style HUD · Artifact data</small>
+        <div class="hud-grid">
+          <div class="hud">
+            <div class="hud-label">Terracotta infantry unit</div>
+            <div class="hud-row">
+              <span class="hud-key">Age</span>
+              <span class="hud-val">c. 210 BCE</span>
+            </div>
+            <div class="hud-row">
+              <span class="hud-key">Material</span>
+              <span class="hud-val">Fired clay, pigment traces</span>
+            </div>
+            <div class="hud-row">
+              <span class="hud-key">Excavation</span>
+              <span class="hud-val">Farmers · 1974</span>
+            </div>
+            <div class="hud-row">
+              <span class="hud-key">Status</span>
+              <span class="hud-val">Ongoing restoration</span>
+            </div>
+          </div>
+
+          <div class="hud">
+            <div class="hud-label">Bronze chariot model</div>
+            <div class="hud-row">
+              <span class="hud-key">Dynasty</span>
+              <span class="hud-val">Qin</span>
+            </div>
+            <div class="hud-row">
+              <span class="hud-key">Composition</span>
+              <span class="hud-val">Bronze, gold, lacquer</span>
+            </div>
+            <div class="hud-row">
+              <span class="hud-key">Scale</span>
+              <span class="hud-val">1 : 2 life size</span>
+            </div>
+            <div class="hud-row">
+              <span class="hud-key">Use</span>
+              <span class="hud-val">Funerary symbol</span>
+            </div>
+          </div>
+
+          <div class="hud">
+            <div class="hud-label">Armillary sphere</div>
+            <div class="hud-row">
+              <span class="hud-key">Type</span>
+              <span class="hud-val">Astronomical instrument</span>
+            </div>
+            <div class="hud-row">
+              <span class="hud-key">Epoch</span>
+              <span class="hud-val">Ming reconstruction</span>
+            </div>
+            <div class="hud-row">
+              <span class="hud-key">Function</span>
+              <span class="hud-val">Track star paths</span>
+            </div>
+            <div class="hud-row">
+              <span class="hud-key">UI mode</span>
+              <span class="hud-val">Constellation overlay</span>
+            </div>
+          </div>
+
+          <div class="hud">
+            <div class="hud-label">Star chart silk</div>
+            <div class="hud-row">
+              <span class="hud-key">Medium</span>
+              <span class="hud-val">Ink on silk</span>
+            </div>
+            <div class="hud-row">
+              <span class="hud-key">Coordinates</span>
+              <span class="hud-val">Northern sky sectors</span>
+            </div>
+            <div class="hud-row">
+              <span class="hud-key">Scan</span>
+              <span class="hud-val">Multispectral, 4 bands</span>
+            </div>
+            <div class="hud-row">
+              <span class="hud-key">Overlay</span>
+              <span class="hud-val">Modern RA/Dec grid</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <footer>
+    <div>Xi’an field log · where burial pits, mountain shrines and neon markets overlap into one continuous frame.</div>
+    <div class="footer-tags">
+      <span>#xian</span>
+      <span>#terracotta</span>
+      <span>#cyberpunk</span>
+      <span>#mountains</span>
+      <span>#astronomy</span>
+    </div>
+  </footer>
+</body>
+</html>
