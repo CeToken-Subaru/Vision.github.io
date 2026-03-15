@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>GeneraCAD – Generative AI for CAD</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="GeneraCAD is a generative AI CAD assistant that turns prompts and constraints into optimized 3D designs in minutes."
+  />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.12);
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --card: #111827;
+      --border: #1f2933;
+      --danger: #f97373;
+      --radius: 12px;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.55);
+      --transition-fast: 200ms ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 45%, #000 100%);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: conic-gradient(from 180deg, #22d3ee, #4f46e5, #a855f7, #22d3ee);
+      padding: 2px;
+      position: relative;
+      box-shadow: 0 0 22px rgba(79, 70, 229, 0.7);
+    }
+
+    .logo-mark-inner {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 20%, #0f172a, #020617);
+      border-radius: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e5e7eb;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    nav {
+      display: flex;
+      gap: 18px;
+      font-size: 0.9rem;
+    }
+
+    nav a {
+      color: var(--muted);
+      padding: 6px 0;
+      position: relative;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      height: 2px;
+      width: 0;
+      background: linear-gradient(90deg, #22d3ee, #4f46e5);
+      transition: width var(--transition-fast);
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* Hero */
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.2fr);
+      gap: 40px;
+      align-items: center;
+      margin-bottom: 60px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .eyebrow-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.8);
+    }
+
+    h1 {
+      font-size: clamp(2.7rem, 4vw, 3.4rem);
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+
+    h1 span.accent {
+      background: linear-gradient(120deg, #22d3ee, #4f46e5, #a855f7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 28px rgba(79, 70, 229, 0.55);
+    }
+
+    .hero-subtitle {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 540px;
+      margin-bottom: 22px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 26px;
+      font-size: 0.82rem;
+    }
+
+    .badge {
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      color: #e5e7eb;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 20px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .btn-primary {
+      background: radial-gradient(circle at 0 0, #22d3ee, #4f46e5 35%, #1d1f4f 80%);
+      color: #e5e7eb;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.9);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.95);
+      border-color: rgba(129, 140, 248, 0.8);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #e5e7eb;
+      border-color: rgba(148, 163, 184, 0.6);
+    }
+
+    .btn-outline:hover {
+      border-color: #4f46e5;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .hero-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    /* Hero visual */
+
+    .hero-visual {
+      position: relative;
+      min-height: 260px;
+    }
+
+    .orb {
+      position: absolute;
+      inset: 0;
+      filter: blur(26px);
+      opacity: 0.75;
+      background:
+        radial-gradient(circle at 20% 0, rgba(56, 189, 248, 0.25), transparent 60%),
+        radial-gradient(circle at 80% 0, rgba(79, 70, 229, 0.33), transparent 60%),
+        radial-gradient(circle at 50% 100%, rgba(109, 40, 217, 0.32), transparent 55%);
+    }
+
+    .panel {
+      position: relative;
+      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.18), rgba(15, 23, 42, 0.96));
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 18px;
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+
+    .panel-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .panel-dots {
+      display: flex;
+      gap: 5px;
+    }
+
+    .panel-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #111827;
+      opacity: 0.7;
+    }
+
+    .panel-main {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .prompt-card {
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 12px;
+      padding: 10px 11px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      margin-bottom: 10px;
+    }
+
+    .prompt-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .prompt-text {
+      font-size: 0.86rem;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+      font-size: 0.75rem;
+    }
+
+    .chip {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
+
+    .small-tag {
+      font-size: 0.72rem;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(22, 163, 74, 0.12);
+      color: #bbf7d0;
+      border: 1px solid rgba(34, 197, 94, 0.6);
+    }
+
+    .variants {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .variant {
+      padding: 8px 9px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px dashed rgba(148, 163, 184, 0.5);
+      font-size: 0.75rem;
+    }
+
+    .variant h4 {
+      font-size: 0.78rem;
+      margin-bottom: 4px;
+      color: #e5e7eb;
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .metric-row strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .panel-floater {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(129, 140, 248, 0.7);
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .panel-floater span.pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    /* Sections */
+
+    section {
+      margin-bottom: 48px;
+    }
+
+    section h2 {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+
+    section p {
+      color: var(--muted);
+      font-size: 0.94rem;
+      max-width: 620px;
+      margin-bottom: 18px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 16px 15px;
+      font-size: 0.9rem;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .card p {
+      margin-bottom: 0;
+      font-size: 0.88rem;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .pill {
+      font-size: 0.78rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: #e5e7eb;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      font-size: 0.86rem;
+    }
+
+    .step {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 12px 11px;
+    }
+
+    .step-number {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .step h3 {
+      font-size: 0.96rem;
+      margin-bottom: 4px;
+    }
+
+    /* Contact */
+
+    .contact {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    form {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 16px 14px;
+      font-size: 0.9rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 8px 9px;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: #020617;
+      color: var(--text);
+      font: inherit;
+      margin-bottom: 12px;
+      outline: none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    input:focus, textarea:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.5);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: -6px;
+      margin-bottom: 12px;
+    }
+
+    footer {
+      margin-top: 40px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: underline;
+      text-decoration-style: dotted;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 900px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual {
+        order: -1;
+      }
+
+      .grid-3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .steps {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .contact {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      main {
+        padding-inline: 16px;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="logo">
+        <div class="logo-mark">
+          <div class="logo-mark-inner">GC</div>
+        </div>
+        <span>GeneraCAD</span>
+      </div>
+      <nav>
+        <a href="#problem">Problem</a>
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <section class="hero" id="top">
+      <div>
+        <div class="eyebrow">
+          <span class="eyebrow-pill">
+            <span class="eyebrow-dot"></span>
+            Live university project
+          </span>
+          <span>Generative AI · CAD</span>
+        </div>
+        <h1>
+          Turn prompts into <span class="accent">manufacturable CAD</span> in minutes.
+        </h1>
+        <p class="hero-subtitle">
+          GeneraCAD is a generative AI assistant for engineers and product designers. Describe your part, set constraints, and explore optimized CAD concepts before you ever open traditional CAD software.
+        </p>
+        <div class="hero-badges">
+          <span class="badge">Text‑to‑CAD concepts</span>
+          <span class="badge">Constraint‑driven optimization</span>
+          <span class="badge">Rapid variant exploration</span>
+        </div>
+        <div class="cta-row">
+          <a href="#contact" class="btn btn-primary">Book a demo / chat</a>
+          <a href="YOUR_SLIDES_LINK_OR_PDF_HERE" class="btn btn-outline" target="_blank" rel="noopener">
+            View pitch deck
+          </a>
+        </div>
+        <p class="hero-note">
+          Built as a final‑year project – this site supplements the live presentation and prototype.
+        </p>
+      </div>
+
+      <div class="hero-visual">
+        <div class="orb"></div>
+        <div class="panel">
+          <div class="panel-top">
+            <span>GeneraCAD · Prompt workspace</span>
+            <div class="panel-dots">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="panel-main">
+            <div>
+              <div class="prompt-card">
+                <div class="prompt-label">Prompt</div>
+                <div class="prompt-text">
+                  Design a lightweight aluminium mounting bracket for a drone arm, span 120 mm, supports 80 N load with safety factor 2.5, 3D‑printable.
+                </div>
+                <div class="chip-row">
+                  <span class="chip">Material: Al‑6061</span>
+                  <span class="chip">Max mass: 80 g</span>
+                  <span class="chip">Process: SLM</span>
+                </div>
+              </div>
+              <span class="small-tag">AI suggests geometry & topology automatically</span>
+            </div>
+            <div class="variants">
+              <div class="variant">
+                <h4>Variant A · Minimal mass</h4>
+                <div class="metric-row">
+                  <span>Mass</span>
+                  <strong>54 g</strong>
+                </div>
+                <div class="metric-row">
+                  <span>Compliance</span>
+                  <strong>OK</strong>
+                </div>
+              </div>
+              <div class="variant">
+                <h4>Variant B · Stiffness</h4>
+                <div class="metric-row">
+                  <span>Mass</span>
+                  <strong>71 g</strong>
+                </div>
+                <div class="metric-row">
+                  <span>Deflection</span>
+                  <strong>-38%</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-floater">
+            <span class="pill-dot"></span>
+            <span>Export parametric CAD · STEP</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="problem">
+      <h2>The problem</h2>
+      <p>
+        Today, engineers burn hours iterating CAD concepts by hand, tweaking sketches, and re‑running simulations just to reach a first viable design. Early‑stage exploration is slow, expensive, and rarely covers more than a handful of options.
+      </p>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Manual iteration</h3>
+          <p>Designers redraw similar parts again and again instead of exploring higher‑level ideas and trade‑offs.</p>
+        </div>
+        <div class="card">
+          <h3>Narrow design space</h3>
+          <p>Time pressure means only a few variants are tested, so better concepts are left undiscovered.</p>
+        </div>
+        <div class="card">
+          <h3>Tool friction</h3>
+          <p>Complex CAD workflows make it hard for non‑experts to participate in early design discussions.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <h2>The GeneraCAD solution</h2>
+      <p>
+        GeneraCAD uses generative AI to produce CAD‑ready design concepts from natural‑language prompts plus engineering constraints. Instead of drawing everything from scratch, you start from a family of optimized options.
+      </p>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Prompt‑driven concepts</h3>
+          <p>Describe the function, constraints, and manufacturing method in plain English; GeneraCAD proposes candidate geometries.</p>
+          <div class="pill-row">
+            <span class="pill">Text‑to‑CAD</span>
+            <span class="pill">Design intent</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Constraint‑aware AI</h3>
+          <p>Specify loads, materials, safety factors, and process limits; the system optimizes for weight, stiffness, or cost.</p>
+          <div class="pill-row">
+            <span class="pill">Lightweighting</span>
+            <span class="pill">Safety factors</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>CAD‑friendly outputs</h3>
+          <p>Export candidate designs as editable CAD (e.g. STEP / feature‑based templates) so engineers can refine them in existing tools.</p>
+          <div class="pill-row">
+            <span class="pill">Integration‑first</span>
+            <span class="pill">Existing workflows</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <h2>How it fits your workflow</h2>
+      <p>
+        GeneraCAD is designed to sit before detailed CAD modeling. It accelerates early exploration while keeping engineers in control of final geometry and sign‑off.
+      </p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">Step 1</div>
+          <h3>Describe the part</h3>
+          <p>Capture function, interfaces, loads, constraints, and manufacturing preferences in a structured prompt.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">Step 2</div>
+          <h3>Set constraints</h3>
+          <p>Define materials, safety factors, maximum mass, and forbidden regions or keep‑out zones.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">Step 3</div>
+          <h3>Generate variants</h3>
+          <p>Let the AI explore many geometries, then filter by performance metrics and visual similarity.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">Step 4</div>
+          <h3>Export & refine</h3>
+          <p>Send shortlisted concepts into your preferred CAD package for detailed modelling and validation.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2>Talk to the team</h2>
+      <p>
+        This project is being developed as part of a university course. If you are an examiner, lecturer, or potential collaborator and want to access the demo or code, reach out below.
+      </p>
+      <div class="contact">
+        <form action="mailto:YOUR_EMAIL_HERE" method="post" enctype="text/plain">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" placeholder="Your name" required />
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" required />
+
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Hi, I'm interested in seeing the prototype / thesis..."></textarea>
+
+          <p class="hint">The form opens your email client and pre‑fills the message to send to me.</p>
+
+          <button type="submit" class="btn btn-primary">Send message</button>
+        </form>
+
+        <div>
+          <div class="card">
+            <h3>Presentation context</h3>
+            <p>
+              This website is a companion to my live university presentation. During the talk, I walk through the problem, the GeneraCAD architecture, and a short demo video of concept generation.
+            </p>
+          </div>
+          <div class="card" style="margin-top:12px;">
+            <h3>Quick links</h3>
+            <p>Slides: <a href="YOUR_SLIDES_LINK_OR_PDF_HERE" target="_blank" rel="noopener">download / view</a></p>
+            <p>GitHub / repo: <a href="YOUR_GITHUB_LINK_HERE" target="_blank" rel="noopener">view prototype</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© <span id="year"></span> GeneraCAD · Student project.</span>
+      <span>Built for university assessment · Ashford, UK.</span>
+    </footer>
+  </main>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
