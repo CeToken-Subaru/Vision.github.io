@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,24 +8,38 @@
     body { font-family: sans-serif; margin: 40px; }
     button { padding: 12px 20px; font-size: 16px; }
   </style>
+
+  <!-- Add this script tag -->
+  <script
+    src="https://js.stripe.com/v3/"
+    async
+  ></script>
 </head>
 <body>
   <h1>STL Viewer (Test)</h1>
   <button id="stripe-button">Subscribe (Test)</button>
 
   <script>
-    document.getElementById("stripe-button").addEventListener("click", () => {
-      // Replace this with your Stripe public key (from your Stripe Dashboard)
-      const stripe = Stripe("pk_test_51TMc4W7C37GpVRTKo01Ko5XmvrBLmgrNjvIJ9cftfB52PhQtdeexx6QyuokdaZewxtKLzGOQ5isnhdtQY2Itp53k00qBYcIyP5");
+    // Only run after Stripe loads
+    document.addEventListener("DOMContentLoaded", () => {
+      const stripe = Stripe("pk_test_51TMc4W7C37GpVRTKo01Ko5XmvrBLmgrNjvIJ9cftfB52PhQtdeexx6QyuokdaZewxtKLzGOQ5isnhdtQY2Itp53k00qBYcIyP5"); // your publishable key
 
-      // Replace this with your Stripe Price ID (from Dashboard)
-      const priceId = "price_1TMctA7C37GpVRTKjLXc8PH6";
+      document.getElementById("stripe-button").addEventListener("click", async () => {
+        const { error } = await stripe.redirectToCheckout({
+          lineItems: [
+            {
+              price: "price_1TMctA7C37GpVRTKjLXc8PH6", // your Stripe Price ID
+              quantity: 1,
+            },
+          ],
+          mode: "subscription",
+          successUrl: "https://github.com/CeToken-Subaru/Vision.github.io/thank-you.html",
+          cancelUrl: "https://github.com/CeToken-Subaru/Vision.github.io",
+        });
 
-      stripe.redirectToCheckout({
-        lineItems: [{ price: priceId, quantity: 1 }],
-        mode: "subscription",
-        successUrl: "https://github.com/CeToken-Subaru/Vision.github.io/thank-you.html",
-        cancelUrl: "https://github.com/CeToken-Subaru/Vision.github.io",
+        if (error) {
+          console.error("Error:", error);
+        }
       });
     });
   </script>
