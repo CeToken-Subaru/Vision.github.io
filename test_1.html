@@ -1,4 +1,6 @@
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,20 +11,17 @@
     button { padding: 12px 20px; font-size: 16px; }
   </style>
 
-  <!-- Add this script tag -->
-  <script
-    src="https://js.stripe.com/v3/"
-    async
-  ></script>
+  <!-- Stripe JS (v3) -->
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
   <h1>STL Viewer (Test)</h1>
   <button id="stripe-button">Subscribe (Test)</button>
 
   <script>
-    // Only run after Stripe loads
+    // Only run once page is ready
     document.addEventListener("DOMContentLoaded", () => {
-      const stripe = Stripe("pk_test_51TMc4W7C37GpVRTKo01Ko5XmvrBLmgrNjvIJ9cftfB52PhQtdeexx6QyuokdaZewxtKLzGOQ5isnhdtQY2Itp53k00qBYcIyP5"); // your publishable key
+      const stripe = Stripe("pk_test_51TMc4W7C37GpVRTKo01Ko5XmvrBLmgrNjvIJ9cftfB52PhQtdeexx6QyuokdaZewxtKLzGOQ5isnhdtQY2Itp53k00qBYcIyP5"); // your Stripe publishable key
 
       document.getElementById("stripe-button").addEventListener("click", async () => {
         const { error } = await stripe.redirectToCheckout({
@@ -36,9 +35,10 @@
           successUrl: "https://github.com/CeToken-Subaru/Vision.github.io/thank-you.html",
           cancelUrl: "https://github.com/CeToken-Subaru/Vision.github.io",
         });
+        });
 
         if (error) {
-          console.error("Error:", error);
+          console.error("Stripe error:", error);
         }
       });
     });
