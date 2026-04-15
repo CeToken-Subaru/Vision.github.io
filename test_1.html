@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>STL Viewer (Test)</title>
+  <style>
+    body { font-family: sans-serif; margin: 40px; }
+    button { padding: 12px 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h1>STL Viewer (Test)</h1>
+  <button id="stripe-button">Subscribe (Test)</button>
+
+  <script>
+    document.getElementById("stripe-button").addEventListener("click", () => {
+      // Replace this with your Stripe public key (from your Stripe Dashboard)
+      const stripe = Stripe("pk_test_xxxxxxxxxx");
+
+      // Replace this with your Stripe Price ID (from Dashboard)
+      const priceId = "price_xxxxxxxxx";
+
+      stripe.redirectToCheckout({
+        lineItems: [{ price: priceId, quantity: 1 }],
+        mode: "subscription",
+        successUrl: "https://YOUR-REPO-NAME.github.io/thank-you.html",
+        cancelUrl: "https://YOUR-REPO-NAME.github.io",
+      });
+    });
+  </script>
+</body>
+</html>
