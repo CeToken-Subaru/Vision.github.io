@@ -15,10 +15,10 @@
   <script>
     document.getElementById("stripe-button").addEventListener("click", () => {
       // Replace this with your Stripe public key (from your Stripe Dashboard)
-      const stripe = Stripe("pk_test_xxxxxxxxxx");
+      const stripe = Stripe("pk_test_51TMc4W7C37GpVRTKo01Ko5XmvrBLmgrNjvIJ9cftfB52PhQtdeexx6QyuokdaZewxtKLzGOQ5isnhdtQY2Itp53k00qBYcIyP5");
 
       // Replace this with your Stripe Price ID (from Dashboard)
-      const priceId = "price_xxxxxxxxx";
+      const priceId = "price_1TMctA7C37GpVRTKjLXc8PH6";
 
       stripe.redirectToCheckout({
         lineItems: [{ price: priceId, quantity: 1 }],
